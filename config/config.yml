@@ -1,0 +1,43 @@
+# ==========================================
+# 应用默认配置 (非敏感)
+# ==========================================
+
+app:
+  name: "ginVueBlog"
+  version: "v2.0"
+  mode: "debug"                # 会被 .env 中的 APP_MODE 覆盖
+  addr: ":8080"
+  host: "localhost"
+  resource: "./static"
+  ffprobe_path: "/usr/bin/ffprobe"
+  env: "local"
+  mp_host: "https://mp.example.com"
+  ad_octopus_host: "https://ad.example.com"
+
+# 日志配置 (假设你的 logger 包需要这些字段)
+logger:
+  level: "info"
+  file_path: "./logs/app.log"
+  max_size: 100                # MB
+  max_backups: 3
+  max_age: 7                   # 天
+
+# 数据库配置 (密码留空，由 .env 覆盖)
+orm:
+  dsn: ""
+  driver: "mysql"
+  host: "127.0.0.1"
+  port: 3306
+  user: ""
+  password: ""                 # 由 ORM_PASSWORD 环境变量填充
+  dbname: ""
+  charset: "utf8mb4"
+  parse_time: true
+  max_idle_conns: 10
+  max_open_conns: 100
+
+# JWT 配置 (密钥留空，由 .env 覆盖)
+jwt:
+  secret: ""                   # 由 JWT_SECRET 环境变量填充
+  expire: 7200                 # 秒 (2小时)
+  issuer: "ginVueBlog"

@@ -1,0 +1,22 @@
+# Go编译二进制程序
+*.exe
+bin/
+cmd/api/api.exe
+
+# 隐私配置（数据库账号、JWT密钥，禁止上传GitHub）
+.env
+# config/config.yml
+
+# IDE缓存文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 日志、临时文件
+*.log
+tmp/
+logs/
+
+# Go依赖缓存
+vendor/
