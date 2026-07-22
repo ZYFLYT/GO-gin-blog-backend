@@ -19,7 +19,7 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 
 // RegisterService Register注册
 func (s *UserService) RegisterService(username, password, email string) (*model.User, error) {
-	existUser, _ := s.repo.FindByUsernameRepo(username)
+	existUser, _ := s.repo.FindUserByUsernameRepo(username)
 	if existUser != nil {
 		return nil, errors.New("该用户名已被使用")
 	}
@@ -37,7 +37,7 @@ func (s *UserService) RegisterService(username, password, email string) (*model.
 		Status:   1,
 	}
 
-	if err := s.repo.CreateRepo(user); err != nil {
+	if err := s.repo.CreateUserRepo(user); err != nil {
 		return nil, errors.New("注册失败，请稍后重试")
 	}
 	return user, nil
@@ -45,7 +45,7 @@ func (s *UserService) RegisterService(username, password, email string) (*model.
 
 // LoginService Login登录
 func (s *UserService) LoginService(username, password string) (*model.User, error) {
-	user, err := s.repo.FindByUsernameRepo(username)
+	user, err := s.repo.FindUserByUsernameRepo(username)
 	if err != nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -64,7 +64,7 @@ func (s *UserService) LoginService(username, password string) (*model.User, erro
 
 // GetUserByIDService 根据用户ID获取用户信息
 func (s *UserService) GetUserByIDService(id uint) (*model.User, error) {
-	user, err := s.repo.FindByIDRepo(id)
+	user, err := s.repo.FindUserByIDRepo(id)
 	if err != nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -80,17 +80,17 @@ func (s *UserService) UpdateUserService(id uint, nickname, email string) error {
 		"nickname": nickname,
 		"email":    email,
 	}
-	return s.repo.UpdateRepo(id, updates)
+	return s.repo.UpdateUserRepo(id, updates)
 }
 
 // DeleteUserService 删除用户，基于ID
 func (s *UserService) DeleteUserService(id uint) error {
-	return s.repo.DeleteRepo(id)
+	return s.repo.DeleteUserRepo(id)
 }
 
 // ChangePasswordService 修改密码
 func (s *UserService) ChangePasswordService(id uint, oldPassword, newPassword string) error {
-	user, err := s.repo.FindByIDRepo(id)
+	user, err := s.repo.FindUserByIDRepo(id)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
@@ -110,7 +110,7 @@ func (s *UserService) ChangePasswordService(id uint, oldPassword, newPassword st
 	updates := map[string]interface{}{
 		"password": string(hashedPassword),
 	}
-	return s.repo.UpdateRepo(id, updates)
+	return s.repo.UpdateUserRepo(id, updates)
 }
 
 // GetUserListService 获取用户列表
@@ -125,5 +125,5 @@ func (s *UserService) GetUserListService(page, pageSize int, keyword string, sta
 		pageSize = 100
 	}
 
-	return s.repo.ListRepo(page, pageSize, keyword, status)
+	return s.repo.ListUserRepo(page, pageSize, keyword, status)
 }

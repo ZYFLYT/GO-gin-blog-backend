@@ -5,7 +5,7 @@ cmd/api/api.exe
 
 # 隐私配置（数据库账号、JWT密钥，禁止上传GitHub）
 .env
-# config/config.yml
+config/config.yml
 
 # IDE缓存文件
 .idea/

@@ -16,7 +16,7 @@ func NewCategoryService(repo *repository.CategoryRepo) *CategoryService {
 }
 
 func (s *CategoryService) CreateCategoryService(categoryName, description string, sort int) (*model.Category, error) {
-	existName, _ := s.repo.FindByNameRepo(categoryName)
+	existName, _ := s.repo.FindCategoryByNameRepo(categoryName)
 	if existName != nil {
 		return nil, errors.New("该类别已存在")
 	}
@@ -27,19 +27,19 @@ func (s *CategoryService) CreateCategoryService(categoryName, description string
 		Sort:        sort,
 	}
 
-	if err := s.repo.CreateRepo(category); err != nil {
+	if err := s.repo.CreateCategoryRepo(category); err != nil {
 		return nil, err
 	}
 	return category, nil
 }
 
 func (s *CategoryService) UpdateCategoryService(id uint, sort, status int, categoryName, description string) error {
-	exist, _ := s.repo.FindByIDRepo(id)
+	exist, _ := s.repo.FindCategoryByIDRepo(id)
 	if exist == nil {
 		return errors.New("该分类不存在")
 	}
 
-	sameName, _ := s.repo.FindByNameRepo(categoryName)
+	sameName, _ := s.repo.FindCategoryByNameRepo(categoryName)
 	if sameName != nil {
 		return errors.New("分类名已存在")
 	}
@@ -50,7 +50,7 @@ func (s *CategoryService) UpdateCategoryService(id uint, sort, status int, categ
 		"sort":        sort,
 		"status":      status,
 	}
-	return s.repo.UpdateRepo(id, category)
+	return s.repo.UpdateCategoryRepo(id, category)
 }
 
 func (s *CategoryService) GetCategoryListService(page, pageSize int, keyword string, status *int) ([]model.Category, int64, error) {
@@ -63,11 +63,11 @@ func (s *CategoryService) GetCategoryListService(page, pageSize int, keyword str
 	if pageSize > 100 {
 		pageSize = 100
 	}
-	return s.repo.ListRepo(page, pageSize, keyword, status)
+	return s.repo.ListCategoryRepo(page, pageSize, keyword, status)
 }
 
 func (s *CategoryService) GetCategoryByIDService(id uint) (*model.Category, error) {
-	category, err := s.repo.FindByIDRepo(id)
+	category, err := s.repo.FindCategoryByIDRepo(id)
 	if err != nil {
 		return nil, err
 	}
@@ -80,5 +80,5 @@ func (s *CategoryService) GetCategoryByIDService(id uint) (*model.Category, erro
 }
 
 func (s *CategoryService) DeleteCategoryService(id uint) error {
-	return s.repo.DeleteRepo(id)
+	return s.repo.DeleteCategoryRepo(id)
 }

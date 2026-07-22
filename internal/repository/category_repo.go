@@ -15,19 +15,19 @@ func NewCategoryRepo(db *gorm.DB) *CategoryRepo {
 	return &CategoryRepo{db: db}
 }
 
-func (r *CategoryRepo) CreateRepo(category *model.Category) error {
+func (r *CategoryRepo) CreateCategoryRepo(category *model.Category) error {
 	return r.db.Create(category).Error
 }
 
-func (r *CategoryRepo) UpdateRepo(id uint, update map[string]interface{}) error {
+func (r *CategoryRepo) UpdateCategoryRepo(id uint, update map[string]interface{}) error {
 	return r.db.Model(&model.Category{}).Where("id=?", id).Updates(update).Error
 }
 
-func (r *CategoryRepo) DeleteRepo(id uint) error {
+func (r *CategoryRepo) DeleteCategoryRepo(id uint) error {
 	return r.db.Delete(&model.Category{}, id).Error
 }
 
-func (r *CategoryRepo) FindByIDRepo(id uint) (*model.Category, error) {
+func (r *CategoryRepo) FindCategoryByIDRepo(id uint) (*model.Category, error) {
 	var category model.Category
 	err := r.db.First(&category, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -36,7 +36,7 @@ func (r *CategoryRepo) FindByIDRepo(id uint) (*model.Category, error) {
 	return &category, err
 }
 
-func (r *CategoryRepo) FindByNameRepo(name string) (*model.Category, error) {
+func (r *CategoryRepo) FindCategoryByNameRepo(name string) (*model.Category, error) {
 	var category model.Category
 	err := r.db.Where("name=?", name).First(&category).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -45,8 +45,8 @@ func (r *CategoryRepo) FindByNameRepo(name string) (*model.Category, error) {
 	return &category, err
 }
 
-func (r *CategoryRepo) ListRepo(page, pageSize int, keyword string, status *int) ([]model.Category, int64, error) {
-	var category []model.Category
+func (r *CategoryRepo) ListCategoryRepo(page, pageSize int, keyword string, status *int) ([]model.Category, int64, error) {
+	var categoryList []model.Category
 	var count int64
 
 	query := r.db.Model(&model.Category{})
@@ -64,6 +64,6 @@ func (r *CategoryRepo) ListRepo(page, pageSize int, keyword string, status *int)
 	}
 
 	offset := (page - 1) * pageSize
-	err := query.Offset(offset).Limit(pageSize).Find(&category).Error
-	return category, count, err
+	err := query.Offset(offset).Limit(pageSize).Find(&categoryList).Error
+	return categoryList, count, err
 }
