@@ -23,8 +23,8 @@ func (h *UserHandler) RegisterHandler(c *gin.Context) {
 	appG := &utils.Gin{C: c}
 
 	var req struct {
-		Username string `json:"username" binding:"required min=3 max=20"`
-		Password string `json:"password" binding:"required min=6 max=20"`
+		Username string `json:"username" binding:"required,min=3,max=20"`
+		Password string `json:"password" binding:"required,min=6,max=20"`
 		Email    string `json:"email" binding:"required,email"`
 	}
 
@@ -113,13 +113,24 @@ func (h *UserHandler) GetUserListHandler(c *gin.Context) {
 	appG := utils.Gin{C: c}
 
 	// 解析分页参数
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	page, err1 := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, err2 := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	if err1 != nil {
+		appG.Error(utils.ERROR, err1.Error(), nil)
+		return
+	} else if err2 != nil {
+		appG.Error(utils.ERROR, err2.Error(), nil)
+		return
+	}
 	keyword := c.Query("keyword")
 
 	var status *int
 	if statusStr := c.Query("status"); statusStr != "" {
-		s, _ := strconv.Atoi(statusStr)
+		s, err3 := strconv.Atoi(statusStr)
+		if err3 != nil {
+			appG.Error(utils.ERROR, err3.Error(), nil)
+			return
+		}
 		status = &s
 	}
 

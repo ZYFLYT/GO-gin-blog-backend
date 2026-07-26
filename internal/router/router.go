@@ -21,6 +21,10 @@ func InitRouter(db *gorm.DB, JwtSecret string) *gin.Engine {
 	categoryRepo := repository.NewCategoryRepo(db)
 	categoryService := service.NewCategoryService(categoryRepo)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
+	//标签
+	tagRepo := repository.NewTagRepo(db)
+	tagService := service.NewTagService(tagRepo)
+	tagHandler := handler.NewTagHandler(tagService)
 
 	//2、创建Gin引擎
 	r := gin.New()
@@ -43,7 +47,10 @@ func InitRouter(db *gorm.DB, JwtSecret string) *gin.Engine {
 		api.POST("/login", userHandler.LoginHandler)
 		//公开分类权限
 		api.GET("/categories", categoryHandler.GetCategoryListHandler)
-		api.GET("/categories/", categoryHandler.GetCategoryHandler)
+		api.GET("/categories/:id", categoryHandler.GetCategoryHandler)
+		//公开标签权限
+		api.GET("/tags", tagHandler.GetTagListHandler)
+		api.GET("/tags/:id", tagHandler.GetTagHandler)
 		//鉴权路由
 		auth := api.Group("/")
 		{
@@ -58,6 +65,10 @@ func InitRouter(db *gorm.DB, JwtSecret string) *gin.Engine {
 			auth.POST("/categories", categoryHandler.CreateCategoryHandler)
 			auth.PUT("/categories/:id", categoryHandler.UpdateCategoryHandler)
 			auth.DELETE("/categories/:id", categoryHandler.DeleteCategoryHandler)
+			//标签模块
+			auth.POST("/tags", tagHandler.CreateTagHandler)
+			auth.PUT("/tags/:id", tagHandler.UpdateTagHandler)
+			auth.DELETE("/tags/:id", tagHandler.DeleteTagHandler)
 		}
 	}
 

@@ -20,8 +20,8 @@ func (h *CategoryHandler) CreateCategoryHandler(c *gin.Context) {
 	appG := utils.Gin{C: c}
 
 	var req struct {
-		Name        string `json:"name" binding:"required min=1 max=20"`
-		Description string `json:"description" binding:"min=1 max=50"`
+		Name        string `json:"name" binding:"required,min=1,max=20"`
+		Description string `json:"description" binding:"min=1,max=50"`
 		Sort        int    `json:"sort" binding:"default=0"`
 	}
 
@@ -74,13 +74,24 @@ func (h *CategoryHandler) GetCategoryHandler(c *gin.Context) {
 func (h *CategoryHandler) GetCategoryListHandler(c *gin.Context) {
 	appG := utils.Gin{C: c}
 
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	page, err1 := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, err2 := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	if err1 != nil {
+		appG.Error(utils.ERROR, err1.Error(), nil)
+		return
+	} else if err2 != nil {
+		appG.Error(utils.ERROR, err2.Error(), nil)
+		return
+	}
 	keyword := c.Query("keyword")
 
 	var status *int
 	if statusStr := c.Query("status"); statusStr != "" {
-		s, _ := strconv.Atoi(statusStr)
+		s, err3 := strconv.Atoi(statusStr)
+		if err3 != nil {
+			appG.Error(utils.ERROR, err3.Error(), nil)
+			return
+		}
 		status = &s
 	}
 
