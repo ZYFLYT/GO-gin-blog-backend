@@ -45,7 +45,7 @@ func (r *TagRepo) FindTagByNameRepo(name string) (*model.Tag, error) {
 	return &tag, nil
 }
 
-func (r *TagRepo) ListTag(page, pageSize int, keyword string, status *int) ([]model.Tag, int64, error) {
+func (r *TagRepo) ListTagRepo(page, pageSize int, keyword string, status *int) ([]model.Tag, int64, error) {
 	var tagList []model.Tag
 	var count int64
 

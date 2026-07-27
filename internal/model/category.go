@@ -8,3 +8,7 @@ type Category struct {
 	Sort        int    `gorm:"default:0" json:"sort"`
 	Status      int    `gorm:"default:1" json:"status"`
 }
+
+func (Category) TableName() string {
+	return "categories"
+}

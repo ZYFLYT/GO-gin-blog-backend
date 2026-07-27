@@ -94,5 +94,5 @@ func (s *TagService) GetTagListService(page, pageSize int, keyword string, statu
 		pageSize = 100
 	}
 
-	return s.repo.ListTag(page, pageSize, keyword, status)
+	return s.repo.ListTagRepo(page, pageSize, keyword, status)
 }
