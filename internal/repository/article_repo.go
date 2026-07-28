@@ -7,31 +7,31 @@ import (
 	"gorm.io/gorm"
 )
 
-type ArticleRepo struct {
+type ArticleRepository struct {
 	db *gorm.DB
 }
 
-func NewArticleRepo(db *gorm.DB) *ArticleRepo {
-	return &ArticleRepo{db: db}
+func NewArticleRepo(db *gorm.DB) *ArticleRepository {
+	return &ArticleRepository{db: db}
 }
 
 /**
 简单查询
 */
 
-func (r *ArticleRepo) CreateArticleRepo(article *model.Article) error {
+func (r *ArticleRepository) CreateArticleRepo(article *model.Article) error {
 	return r.db.Create(article).Error
 }
 
-func (r *ArticleRepo) UpdateArticleRepo(id uint, update map[string]interface{}) error {
+func (r *ArticleRepository) UpdateArticleRepo(id uint, update map[string]interface{}) error {
 	return r.db.Model(&model.Article{}).Where("id = ?", id).Updates(update).Error
 }
 
-func (r *ArticleRepo) DeleteArticleRepo(id uint) error {
+func (r *ArticleRepository) DeleteArticleRepo(id uint) error {
 	return r.db.Delete(&model.Article{}, id).Error
 }
 
-func (r *ArticleRepo) FindArticleByIDRepo(id uint) (*model.Article, error) {
+func (r *ArticleRepository) FindArticleByIDRepo(id uint) (*model.Article, error) {
 	var article model.Article
 	err := r.db.
 		Preload("User").
@@ -59,7 +59,7 @@ type ArticleListRequest struct {
 	IsPublic   bool
 }
 
-func (r *ArticleRepo) ListArticleRepo(req *ArticleListRequest) ([]model.Article, int64, error) {
+func (r *ArticleRepository) ListArticleRepo(req *ArticleListRequest) ([]model.Article, int64, error) {
 	var articles []model.Article
 	var count int64
 
@@ -131,7 +131,7 @@ func (r *ArticleRepo) ListArticleRepo(req *ArticleListRequest) ([]model.Article,
 	return articles, count, err
 }
 
-func (r *ArticleRepo) IncrementViewCountRepo(id uint) error {
+func (r *ArticleRepository) IncrementViewCountRepo(id uint) error {
 	return r.db.Model(&model.Article{}).
 		Where("id = ?", id).
 		Update("view_count", gorm.Expr("view_count + ?", 1)).Error
