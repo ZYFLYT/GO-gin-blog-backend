@@ -10,7 +10,7 @@ type Article struct {
 	Content     string     `gorm:"type:longtext" json:"content"`
 	Cover       string     `gorm:"type:varchar(255)" json:"cover"`
 	ViewCount   int        `gorm:"default:0" json:"view_count"`
-	Status      int        `gorm:"default:0" json:"status"`
+	Status      int        `gorm:"type:tinyint;default:1;not nul" json:"status"`
 	PublishedAt *time.Time `gorm:"type:datetime" json:"published_at"`
 
 	//外键

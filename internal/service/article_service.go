@@ -196,28 +196,48 @@ func (s *ArticleService) DeleteArticleService(id, UserID uint) error {
 }
 
 // GetArticleService 查询文章
-func (s *ArticleService) GetArticleService(id uint, isPublic bool) (*model.Article, error) {
+func (s *ArticleService) GetArticleService(id uint, currentUserID uint /*, isPublic bool*/) (*model.Article, error) {
 	article, err := s.articleRepo.FindArticleByIDRepo(id)
 	if err != nil || article == nil {
 		return nil, errors.New("文章不存在")
 	}
 
-	if isPublic {
-		if article.Status != 2 {
-			return nil, errors.New("文章未发表")
+	// ===== 权限校验（核心逻辑） =====
+	if article.Status == 1 {
+		// 游客不能看草稿
+		if currentUserID == 0 || currentUserID != article.UserID {
+			return nil, errors.New("文章不存在")
 		}
+		// 必须作者或者管理员才能查看
+		/*if currentUserID != article.UserID || !isPublic {
+			return nil, errors.New("文章不存在")
+		}*/
+		// 草稿不增加浏览量
+		return article, nil
+	}
+
+	if article.Status == 2 {
 		if article.PublishedAt != nil && article.PublishedAt.After(time.Now()) {
-			return nil, errors.New("文章未到发表时间")
+			// 游客不能看未发表的
+			if currentUserID == 0 || currentUserID != article.UserID {
+				return nil, errors.New("文章不存在")
+			}
+			// 必须作者或者管理员才能查看
+			/*if currentUserID != article.UserID || !isPublic {
+				return nil, errors.New("文章不存在")
+			}*/
+
+			return article, nil
 		}
 
-		// 浏览量加一
-		err := s.articleRepo.DeleteArticleRepo(id)
+		err := s.articleRepo.IncrementViewCountRepo(id)
 		if err != nil {
 			return nil, err
 		}
+		return article, nil
 	}
 
-	return article, nil
+	return nil, errors.New("文章状态出现异常")
 }
 
 // GetArticleListService 查询文章列表

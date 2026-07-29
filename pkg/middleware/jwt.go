@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWT鉴权中间件，验证Token，保护需要登录的接口
+// JWT JWT鉴权中间件，验证Token，保护需要登录的接口
 func JWT(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		appG := utils.Gin{C: c}
