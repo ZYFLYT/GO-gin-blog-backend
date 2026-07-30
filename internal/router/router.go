@@ -25,6 +25,10 @@ func InitRouter(db *gorm.DB, JwtSecret string) *gin.Engine {
 	tagRepo := repository.NewTagRepo(db)
 	tagService := service.NewTagService(tagRepo)
 	tagHandler := handler.NewTagHandler(tagService)
+	//文章
+	articleRepo := repository.NewArticleRepo(db)
+	articleService := service.NewArticleService(articleRepo, categoryRepo, tagRepo, db)
+	articleHandler := handler.NewArticleHandler(articleService)
 
 	//2、创建Gin引擎
 	r := gin.New()
@@ -45,30 +49,48 @@ func InitRouter(db *gorm.DB, JwtSecret string) *gin.Engine {
 		//公开用户权限
 		api.POST("/register", userHandler.RegisterHandler)
 		api.POST("/login", userHandler.LoginHandler)
+
 		//公开分类权限
 		api.GET("/categories", categoryHandler.GetCategoryListHandler)
 		api.GET("/categories/:id", categoryHandler.GetCategoryHandler)
+
 		//公开标签权限
 		api.GET("/tags", tagHandler.GetTagListHandler)
 		api.GET("/tags/:id", tagHandler.GetTagHandler)
+
+		//文章,游客可见
+		api.GET("/articles", articleHandler.GetArticleListHandler)
+		api.GET("/articles/:id", articleHandler.GetArticleHandler)
+
 		//鉴权路由
 		auth := api.Group("/")
 		{
 			//挂在JWT中间件
 			auth.Use(middleware.JWT(JwtSecret))
+
 			//用户模块
 			auth.GET("/user/:id", userHandler.GetUserHandler)
 			auth.GET("/users", userHandler.GetUserListHandler)
 			auth.POST("/user/:id", userHandler.UpdateHandler)
 			auth.DELETE("/user/:id", userHandler.DeleteHandler)
+
 			//分类模块
 			auth.POST("/categories", categoryHandler.CreateCategoryHandler)
 			auth.PUT("/categories/:id", categoryHandler.UpdateCategoryHandler)
 			auth.DELETE("/categories/:id", categoryHandler.DeleteCategoryHandler)
+
 			//标签模块
 			auth.POST("/tags", tagHandler.CreateTagHandler)
 			auth.PUT("/tags/:id", tagHandler.UpdateTagHandler)
 			auth.DELETE("/tags/:id", tagHandler.DeleteTagHandler)
+
+			//文章模块
+			auth.POST("/articles", articleHandler.CreateArticleHandler)
+			auth.PUT("/articles/:id", articleHandler.UpdateArticleHandler)
+			auth.DELETE("/articles/:id", articleHandler.DeleteArticleHandler)
+
+			//文件上传
+			auth.POST("/upload", handler.UploadFileHandler)
 		}
 	}
 

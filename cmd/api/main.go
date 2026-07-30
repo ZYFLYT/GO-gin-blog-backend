@@ -68,6 +68,7 @@ func main() {
 		&model.User{},
 		&model.Category{},
 		&model.Tag{},
+		&model.Article{},
 		//后续添加 ...
 	); err != nil {
 		log.Fatalf("数据库迁移失败：%v", err)
